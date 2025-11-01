@@ -1,0 +1,29 @@
+# Core Framework
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+
+# Database
+sqlalchemy==2.0.36
+#psycopg2-binary==2.9.10          # PostgreSQL adapter
+alembic==1.13.3                  # Database migrations
+
+# Validation & Settings
+pydantic==2.10.3
+pydantic-settings==2.6.1
+
+# Security
+python-jose[cryptography]==3.3.0  # JWT
+passlib[bcrypt]==1.7.4            # Password hashing
+python-multipart==0.0.12          # File uploads
+#bcrypt==4.0.1
+
+# Utilities / Performance (optional but recommended)
+orjson==3.10.11                   # Faster JSON
+
+# Development / Testing
+pytest==8.3.4
+pytest-asyncio==0.24.0
+httpx==0.27.2
+
+# If you want SQLite for dev/testing, add:
+# sqlite

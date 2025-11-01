@@ -1,0 +1,22 @@
+# Ignore environment files containing secrets
+.env
+.env.exmple
+env.exmple
+
+# Ignore SQLite database file
+bookdb.sqlite
+
+# Ignore Python cache files and folders
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environment folder (if named 'venv' or similar)
+venv/
+env/
+
+# Ignore IDE/editor files (optional)
+.vscode/
+.idea/
+*.swp
