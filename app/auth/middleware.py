@@ -19,41 +19,57 @@ def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db)
 ) -> User:
-    """Dependency to extract and validate current authenticated user."""
+    print(f"[DEBUG] Received credentials: {credentials}")
     token = credentials.credentials
-    payload = decode_token(token)
-    
-    if not payload:
+
+    try:
+        payload = decode_token(token)
+        print(f"[DEBUG] Decoded token payload: {payload}")
+    except Exception as e:
+        print(f"[DEBUG] Token decode error: {e}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"}
         )
     
-    verify_token_type(payload, "access")
-    user_id, tenant_id, role = extract_user_from_token(payload)
+    if not payload:
+        print("[DEBUG] Empty payload after decoding token")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
     
+    # Further debugging on values extracted
+    user_id, tenant_id, role = extract_user_from_token(payload)
+    print(f"[DEBUG] Extracted user_id={user_id}, tenant_id={tenant_id}, role={role}")
+
     user = db.query(User).filter(
         User.id == user_id,
         User.tenant_id == tenant_id
     ).first()
-    
+
     if not user:
+        print("[DEBUG] User not found")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="User not found"
         )
-    
+
     if not user.is_active:
+        print("[DEBUG] User is inactive")
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="User account is disabled"
         )
-    
+
+    print(f"[DEBUG] User found: username={user.username}, last_login={user.last_login}")
     user.last_login = datetime.utcnow()
     db.commit()
-    
+
     return user
+
 
 
 def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:

@@ -28,20 +28,44 @@ def get_password_hash(password: str) -> str:
     return pwd_context.hash(truncated_password)
 
 
+# def create_access_token(data: Dict[str, Any], expires_delta: Optional[timedelta] = None) -> str:
+#     """Create a JWT access token."""
+#     to_encode = data.copy()
+#     if expires_delta:
+#         expire = datetime.utcnow() + expires_delta
+#     else:
+#         expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    
+#     to_encode.update({
+#         "exp": expire,
+#         "iat": datetime.utcnow(),
+#         "type": "access"
+#     })
+    
+#     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+#     return encoded_jwt
+
 def create_access_token(data: Dict[str, Any], expires_delta: Optional[timedelta] = None) -> str:
     """Create a JWT access token."""
     to_encode = data.copy()
+    # Ensure 'sub' is a string
+    if "sub" in to_encode:
+        # DEBUG: Print type before conversion
+        print(f"[DEBUG] 'sub' before conversion: {to_encode['sub']} (type: {type(to_encode['sub'])})")
+        
+        to_encode["sub"] = str(to_encode["sub"])
+
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    
+
     to_encode.update({
         "exp": expire,
         "iat": datetime.utcnow(),
         "type": "access"
     })
-    
+
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
 
@@ -61,13 +85,30 @@ def create_refresh_token(data: Dict[str, Any]) -> str:
     return encoded_jwt
 
 
-def decode_token(token: str) -> Optional[Dict[str, Any]]:
-    """Decode and validate a JWT token."""
+# def decode_token(token: str) -> Optional[Dict[str, Any]]:
+#     """Decode and validate a JWT token."""
+#     try:
+#         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+#         return payload
+#     except JWTError:
+#         return None
+def decode_token(token: str):
+    print(f"[DEBUG] decode_token called with token: {token}")
+
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = jwt.decode(
+            token,
+            settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM]
+        )
+        print(f"[DEBUG] Payload decoded: {payload}")
         return payload
-    except JWTError:
-        return None
+    except jwt.ExpiredSignatureError:
+        print("[DEBUG] Token expired")
+        raise
+    except jwt.JWTError as e:
+        print(f"[DEBUG] JWT decode error: {e}")
+        raise
 
 
 def verify_token_type(payload: Dict[str, Any], expected_type: str) -> bool:
