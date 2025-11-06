@@ -1,7 +1,13 @@
+# Book Management System (Multi-Tenant FastAPI App)
 
-# Multi-Tenant Book Management System
+[![Python](https://img.shields.io/badge/python-3.13-blue)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green)](https://fastapi.tiangolo.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-A production-grade FastAPI system for managing books with **multi-tenancy** (each organization has separate users/books) and robust **role-based access control** (Admin, Librarian, Member). Powered by Python 3.13+, PostgreSQL, FastAPI, SQLAlchemy, and Pydantic V2.
+A **production-grade FastAPI application** for managing books across multiple organizations with complete **multi-tenancy** and **role-based access control** (Admin, Librarian, Member).  
+Each tenant has isolated data, secure JWT authentication, and full CRUD features for books and users.  
+Built using Python 3.13+, PostgreSQL, FastAPI, SQLAlchemy 2.x, and Pydantic v2.
+
 
 ## 🚀 Features
 - Multi-tenant data isolation: each tenant (organization/company) has private data
@@ -39,29 +45,6 @@ book-management-system/
 └── README.md
 
 
-## JWT Secret Key Generation
-To securely sign your JWT tokens, you'll need a strong secret key. Follow these steps to generate one:
-
-Step-by-step guide:
-1. Open your terminal or Python environment.
-
-2. Run the following Python code:
--> import secrets
--> print(secrets.token_urlsafe(48))
-
-3. Copy the output, which will be a long, random, URL-safe string, e.g.
-hHjA3vmQCLLIn5X_TzKGj2R6aWQGb9LHqeGDRPhXYYDUrzd-L3FI9QyOosE0MsRo
-
-4.Update your .env file with this key:
-SECRET_KEY=hHjA3vmQCLLIn5X_TzKGj2R6aWQGb9LHqeGDRPhXYYDUrzd-L3FI9QyOosE0MsRo
-
-## Important notes:
-Keep your secret key confidential.
-Do not commit it to version control.
-Always generate a new key for production environment.
-
-
-Run the following Python code:
 ## ⚡ Quick Start
 1. Clone and Install  
    git clone <your-repo-url>  
@@ -83,6 +66,28 @@ Run the following Python code:
    uvicorn app.main:app --reload  
    # API docs: http://localhost:8000/api/docs
 
+
+## JWT Secret Key Generation
+To securely sign your JWT tokens, you'll need a strong secret key. Follow these steps to generate one:
+
+Step-by-step guide:
+# 1. Open your terminal or Python environment.
+
+# 2. Run this only once to generate a secure key:
+-> import secrets
+-> print(secrets.token_urlsafe(48))
+
+# 3. Copy the output, which will be a long, random, URL-safe string, e.g.
+   hHjA3vmQCLLIn5X_TzKGj2R6aWQGb9LHqeGDRPhXYYDUrzd-L3FI9QyOosE0MsRo
+
+# 4.Update your .env file with this key:
+SECRET_KEY=hHjA3vmQCLLIn5X_TzKGj2R6aWQGb9LHqeGDRPhXYYDUrzd-L3FI9QyOosE0MsRo
+
+## Important notes:
+Keep your secret key confidential.
+Do not commit it to version control.
+Always generate a new key for production environment.
+
 ## ✨ Usage Examples
 ### Register a Tenant
 curl -X POST http://localhost:8000/api/tenants/register -H "Content-Type: application/json" -d '{"name": "Acme Library", "subdomain": "acme"}'
@@ -103,11 +108,23 @@ curl -X POST http://localhost:8000/api/books -H "Authorization: Bearer <ACCESS_T
 
 **All organizations are fully isolated at the data layer.**
 
+## 👨‍💻 My Role
+
+I developed the complete **Book Management System** using FastAPI, SQLAlchemy, and PostgreSQL.  
+I handled the full development process — from setting up the database and designing APIs to implementing authentication, authorization, and role management.
+
+**Key tasks:**
+- Built a **multi-tenant structure** to keep each organization’s data separate.  
+- Implemented **JWT authentication** and **role-based access control** (Admin, Librarian, Member).  
+- Created **CRUD APIs** for managing books and users with async FastAPI.  
+
+
 ## 🧪 Testing
-pytest
+pytest -q
 
 ## 📄 License
 MIT License
 
 ## 🙏 Attribution
 Inspired by best practices from the FastAPI ecosystem, Tiangolo, and the open Python community.
+Developed by [kpnavadiya](https://github.com/kpnavadiya)
